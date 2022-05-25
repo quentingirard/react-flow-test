@@ -71,7 +71,7 @@ export default function Home({ initialNodes, initialEdges }) {
             defaultEdgeOptions={defaultEdgeOptions}
             fitView
           >
-            <Background variant="dots" gap={12} size={0.2} />
+            <Background variant="dots" gap={12} size={0.3} />
             <MiniMap />
             <Controls />
           </ReactFlow>
