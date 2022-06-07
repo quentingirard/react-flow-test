@@ -1,8 +1,9 @@
 import { useCallback, useState, useRef, useMemo } from 'react';
-import ReactFlow, { ReactFlowProvider , useEdgesState, addEdge, useNodesState, MiniMap, Controls, Background } from 'react-flow-renderer';
+import ReactFlow, { ReactFlowProvider , useEdgesState, addEdge, useNodesState, MiniMap, Controls, Background, MarkerType } from 'react-flow-renderer';
 
 import Sidebar from '../components/sidebar';
 import CustomDefault from '../components/nodes/customDefault';
+import CustomEdge from '../components/customEdge';
 
 import styles from '../styles/Home.module.css';
 
@@ -17,8 +18,9 @@ export default function Home({ initialNodes, initialEdges }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, type: 'customEdge' }, eds)), []);
   const nodeTypes = useMemo(() => ({ customDefault: CustomDefault }), []);
+  const edgeTypes = useMemo(() => ({ customEdge: CustomEdge }), []);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -60,6 +62,7 @@ export default function Home({ initialNodes, initialEdges }) {
         <div className={styles.reactflowWrapper} ref={reactFlowWrapper}>
           <ReactFlow
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
@@ -69,10 +72,14 @@ export default function Home({ initialNodes, initialEdges }) {
             onDrop={onDrop}
             onDragOver={onDragOver}
             defaultEdgeOptions={defaultEdgeOptions}
+            style={{backgroundColor: '#1a202c'}}
             fitView
+            
           >
-            <Background variant="dots" gap={12} size={0.3} />
-            <MiniMap />
+            <Background color="#aaa" gap={16} />
+            <MiniMap nodeColor={n=>{
+   if(n.type === 'default') return 'blue';
+   return '#FFCC00'}} />
             <Controls />
           </ReactFlow>
         </div>
@@ -97,19 +104,22 @@ export async function getServerSideProps() {
 
     initialNodes.push({
       id: currentNode.id.toString(),
-      type: currentNode.conditions?.length > 0 ? 'customDefault' : 'input',
+      type: currentNode.conditions?.length > 0 ? 'customDefault' : 'default',
       position: {x: Math.floor(Math.random() * 500), y: Math.floor(Math.random() * 500)},
       data: {
-        label: currentNode.label.en,
-        answers: currentNode.answers
+        node: currentNode
       }
     })
 
     instance.children.forEach(child => {
       initialEdges.push({
         id: `edge_${currentNode.id}_${child}`,
+        target: child.toString(),
         source: currentNode.id.toString(),
-        target: child.toString()
+        type: 'customEdge',
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+        },
       })
     })
   })

@@ -6,3 +6,24 @@ html, body, #root {
   box-sizing: border-box;
   font-family: sans-serif;
 }
+
+.validationflow .react-flow__node-customnode {
+  background: #e6e6e9;
+}
+
+.react-flow__node-custominput .react-flow__handle {
+  background: #e6e6e9;
+}
+
+.validationflow .react-flow__node-custominput {
+  background: #fff;
+
+}
+
+.validationflow .react-flow__handle-connecting {
+  background: #ff6060;
+}
+
+.validationflow .react-flow__handle-valid {
+  background: #55dd99;
+}
