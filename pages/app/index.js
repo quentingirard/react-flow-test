@@ -1,18 +1,18 @@
 import { useCallback, useState, useRef, useMemo } from 'react';
 import ReactFlow, { ReactFlowProvider , useEdgesState, addEdge, useNodesState, MiniMap, Controls, Background, MarkerType } from 'react-flow-renderer';
 
-import Sidebar from '../components/sidebar';
-import CustomDefault from '../components/nodes/customDefault';
-import CustomEdge from '../components/customEdge';
+import Sidebar from '../../components/sidebar';
+import CustomDefault from '../../components/nodes/customDefault';
+import CustomEdge from '../../components/customEdge';
 
-import styles from '../styles/Home.module.css';
+import styles from '../../styles/Home.module.css';
 
 const defaultEdgeOptions = { animated: false };
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-export default function Home({ initialNodes, initialEdges }) {
+const Home = ({ initialNodes, initialEdges }) => {
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -74,7 +74,6 @@ export default function Home({ initialNodes, initialEdges }) {
             defaultEdgeOptions={defaultEdgeOptions}
             style={{backgroundColor: '#1a202c'}}
             fitView
-            
           >
             <Background color="#aaa" gap={16} />
             <MiniMap nodeColor={n=>{
@@ -131,3 +130,5 @@ export async function getServerSideProps() {
     }
   }
 }
+
+export default Home;
