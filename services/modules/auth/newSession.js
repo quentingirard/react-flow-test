@@ -9,12 +9,15 @@ export default build =>
       },
       responseHandler: async request => {
         const response = await request.json()
-        return {
-          ...response.data,
-          accessToken: request.headers.get('access-token'),
-          client: request.headers.get('client'),
-          expiry: request.headers.get('expiry')
+        if (request.ok) {
+          return {
+            ...response.data,
+            accessToken: request.headers.get('access-token'),
+            client: request.headers.get('client'),
+            expiry: request.headers.get('expiry')
+          }
         }
+        return response
       },
     })
   })

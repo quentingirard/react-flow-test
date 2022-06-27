@@ -32,7 +32,7 @@ export default function SignIn() {
 
   const formik = useFormik({
     initialValues: {
-      email: "sinan.ucak@wavemind.ch",
+      email: "dev@wavemind.ch",
       password: "123456",
     },
     onSubmit: newSession
@@ -61,7 +61,7 @@ export default function SignIn() {
           rounded="lg"
           bg={useColorModeValue('white', 'gray.700')}
           boxShadow="lg"
-          minW='lg'
+          minW="lg"
           p={8}>
           <Stack spacing={4}>
             <Stack align="center">
