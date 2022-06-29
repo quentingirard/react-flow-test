@@ -10,7 +10,7 @@ import { authApi } from '../../services/modules/auth'
 
 const slice = createSlice({
   name: 'credentials',
-  initialState: {},
+  initialState: null,
   extraReducers: builder => {
     builder.addMatcher(
       authApi.endpoints.newSession.matchFulfilled,

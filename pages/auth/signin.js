@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { create } from "@github/webauthn-json" 
 
 import {
   Flex,
@@ -16,19 +17,21 @@ import {
 } from '@chakra-ui/react';
 import { useFormik } from "formik";
 
-import { useNewSessionMutation } from '../../services/modules/auth'
+import { useNewSessionMutation, useCredentialsMutation, useChallengeMutation } from '../../services/modules/auth'
 
 export default function SignIn() {
-  const Router = useRouter()
-  const [newSession, { isLoading, isSuccess, isError, error, data }] = useNewSessionMutation()
+  const [newSession, newSessionValues] = useNewSessionMutation()
+  const [credentials, credentialsValues] = useCredentialsMutation()
+  const [challenge, challengeValues] = useChallengeMutation()
   const [ask2FA, setAsk2FA] = useState(false)
 
+console.log("challengeValues", challengeValues)
+
   useEffect(() => {
-    if (isSuccess) {
-      console.log("isSuccess",data)
+    if (newSessionValues.isSuccess) {
       setAsk2FA(true)
     }
-  }, [isSuccess])
+  }, [newSessionValues.isSuccess])
 
   const formik = useFormik({
     initialValues: {
@@ -38,12 +41,18 @@ export default function SignIn() {
     onSubmit: newSession
   });
 
-  const formik2fa = useFormik({
-    initialValues: {
-      code: ''
-    },
-    onSubmit: () => console.log("j'envoie")
-  })
+  useEffect(() => {
+    if (challengeValues.isSuccess) {
+      create({ 'publicKey': {...challengeValues.data, rp: {name: 'Test'}} })
+      .then((newCredentialInfo) => {
+        console.log('SUCCESS', newCredentialInfo)
+        credentials({credential: newCredentialInfo, challenge: challengeValues.data.challenge})
+      })
+      .catch((error) => {
+          console.log('FAIL', error)
+      })
+    }
+  }, [challengeValues.isSuccess])
 
   if (ask2FA) {
     return (
@@ -67,31 +76,18 @@ export default function SignIn() {
             <Stack align="center">
               <Text fontSize="m" color='red'>Les erreurs</Text>
             </Stack>
-            <form onSubmit={formik2fa.handleSubmit}>
-              <FormControl id="code">
-                <FormLabel>Code</FormLabel>
-                <Input
-                  id="code"
-                  name="code"
-                  type="code"
-                  variant="filled"
-                  onChange={formik2fa.handleChange}
-                  value={formik2fa.values.code}
-                />
-              </FormControl>
-              <Stack spacing={10} mt={8}>
-                <Button
-                  type="submit"
-                  bg="blue.400"
-                  color="white"
-                  isLoading={isLoading}
-                  _hover={{
-                    bg: 'blue.500',
-                  }}>
-                  Verify
-                </Button>
-              </Stack>
-            </form>
+            <Stack spacing={10} mt={8}>
+              <Button
+                type="submit"
+                bg="blue.400"
+                color="white"
+                onClick={challenge}
+                _hover={{
+                  bg: 'blue.500',
+                }}>
+                Verify
+              </Button>
+            </Stack>
           </Stack>
         </Box>
       </Stack>
@@ -118,7 +114,7 @@ export default function SignIn() {
           p={8}>
           <Stack spacing={4}>
             <Stack align="center">
-              <Text fontSize="m" color='red'>{isError && error.data.errors.join()}</Text>
+              <Text fontSize="m" color='red'>{newSessionValues.isError && newSessionValues.error.data.errors.join()}</Text>
             </Stack>
             <form onSubmit={formik.handleSubmit}>
               <FormControl id="email">
@@ -148,7 +144,7 @@ export default function SignIn() {
                   type="submit"
                   bg="blue.400"
                   color="white"
-                  isLoading={isLoading}
+                  isLoading={newSessionValues.isLoading}
                   _hover={{
                     bg: 'blue.500',
                   }}>

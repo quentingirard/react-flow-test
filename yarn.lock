@@ -749,6 +749,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@github/webauthn-json@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@github/webauthn-json/-/webauthn-json-1.0.3.tgz#2403a4bbc5e77d43d633334631467167dd77aa21"
+  integrity sha512-hD4cCudZUvJGR3CPF9Ugz4XZ1uOK2Sgn5D6CDKxxGhW/m3yQ5nu9744TtGhroDa5rXCJGNjw0/S/tnluyFilHQ==
+
 "@humanwhocodes/config-array@^0.9.2":
   version "0.9.5"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.9.5.tgz#2cbaf9a89460da24b5ca6531b8bbfc23e1df50c7"

@@ -1,9 +1,27 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-const baseQuery = fetchBaseQuery({ baseUrl: process.env.SERVER_URL })
+/**
+ * Default api configuration
+ */
+ const baseQuery = fetchBaseQuery({
+  baseUrl: process.env.SERVER_URL,
+  prepareHeaders: async (headers, { getState }) => {
+    const credentials = await getState().credentials
+    console.log("here",credentials)
+    
+    if (credentials) {
+      console.log("dedans")
+      headers.set('access-token', credentials.accessToken)
+      headers.set('client', credentials.client)
+      headers.set('expiry', credentials.expiry)
+      headers.set('uid', credentials.uid)
+    }
+
+    return headers
+  },
+})
 
 const baseQueryWithInterceptor = async (args, api, extraOptions) => {
-  console.log("ICI CONNARD",process.env.SERVER_URL)
   let result = await baseQuery(args, api, extraOptions)
   if (result.error && result.error.status === 401) {
     // here you can deal with 401 error

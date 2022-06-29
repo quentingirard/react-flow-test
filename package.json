@@ -9,6 +9,7 @@
     "@chakra-ui/react": "^2.2.1",
     "@emotion/react": "11",
     "@emotion/styled": "11",
+    "@github/webauthn-json": "^1.0.3",
     "@reduxjs/toolkit": "^1.8.2",
     "eslint": "^8.16.0",
     "formik": "^2.2.9",
