@@ -7,10 +7,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
   baseUrl: process.env.SERVER_URL,
   prepareHeaders: async (headers, { getState }) => {
     const credentials = await getState().credentials
-    console.log("here",credentials)
-    
+
     if (credentials) {
-      console.log("dedans")
       headers.set('access-token', credentials.accessToken)
       headers.set('client', credentials.client)
       headers.set('expiry', credentials.expiry)
@@ -31,5 +29,6 @@ const baseQueryWithInterceptor = async (args, api, extraOptions) => {
 
 export const api = createApi({
   baseQuery: baseQueryWithInterceptor,
+  tagTypes: ['Credential'],
   endpoints: () => ({}),
 })

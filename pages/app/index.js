@@ -90,7 +90,7 @@ const Home = ({ initialNodes, initialEdges }) => {
 
 export async function getServerSideProps() {
   // Fetch data from external API
-  const res = await fetch('https://medalc.unisante.ch/api/v1/versions/1')
+  const res = await fetch('https://medalcreator.unisante.ch/api/v1/versions/1')
   const data = await res.json()
 
   const { nodes, diagnoses } = data.medal_r_json

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { create } from "@github/webauthn-json" 
+import * as WebAuthnJSON from "@github/webauthn-json" 
 
 import {
   Flex,
@@ -17,21 +17,13 @@ import {
 } from '@chakra-ui/react';
 import { useFormik } from "formik";
 
-import { useNewSessionMutation, useCredentialsMutation, useChallengeMutation } from '../../services/modules/auth'
+import { useNewSessionMutation, useChallengeMutation } from '../../services/modules/auth'
 
 export default function SignIn() {
+  const router = useRouter()
+
   const [newSession, newSessionValues] = useNewSessionMutation()
-  const [credentials, credentialsValues] = useCredentialsMutation()
   const [challenge, challengeValues] = useChallengeMutation()
-  const [ask2FA, setAsk2FA] = useState(false)
-
-console.log("challengeValues", challengeValues)
-
-  useEffect(() => {
-    if (newSessionValues.isSuccess) {
-      setAsk2FA(true)
-    }
-  }, [newSessionValues.isSuccess])
 
   const formik = useFormik({
     initialValues: {
@@ -41,126 +33,131 @@ console.log("challengeValues", challengeValues)
     onSubmit: newSession
   });
 
+  const titleColor = useColorModeValue("teal.300", "teal.200");
+
   useEffect(() => {
-    if (challengeValues.isSuccess) {
-      create({ 'publicKey': {...challengeValues.data, rp: {name: 'Test'}} })
-      .then((newCredentialInfo) => {
-        console.log('SUCCESS', newCredentialInfo)
-        credentials({credential: newCredentialInfo, challenge: challengeValues.data.challenge})
-      })
-      .catch((error) => {
-          console.log('FAIL', error)
-      })
+    if (newSessionValues.isSuccess) {
+      if (newSessionValues.data.challenge) {
+        WebAuthnJSON.get({ 'publicKey': { ...newSessionValues.data, rp: {name: 'Test' }} })
+        .then((newCredentialInfo) => {
+          console.log("newCredentialInfo", newCredentialInfo)
+        })
+      } else {
+        router.push('/profile')
+      }
     }
-  }, [challengeValues.isSuccess])
+  }, [newSessionValues.isSuccess])
 
-  if (ask2FA) {
-    return (
-      <Flex
-      minH="100vh"
-      align="center"
-      justify="center"
-      bgGradient='linear(to-b, blue.100, blue.700)'>
-      <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
-        <Stack align="center">
-          <Heading fontSize="4xl">2FA</Heading>
-        </Stack>
 
-        <Box
-          rounded="lg"
-          bg={useColorModeValue('white', 'gray.700')}
-          boxShadow="lg"
-          minW="lg"
-          p={8}>
-          <Stack spacing={4}>
-            <Stack align="center">
-              <Text fontSize="m" color='red'>Les erreurs</Text>
-            </Stack>
-            <Stack spacing={10} mt={8}>
-              <Button
-                type="submit"
-                bg="blue.400"
-                color="white"
-                onClick={challenge}
-                _hover={{
-                  bg: 'blue.500',
-                }}>
-                Verify
-              </Button>
-            </Stack>
-          </Stack>
-        </Box>
-      </Stack>
-    </Flex>
-    )
-  }
+  console.log("newSessionValues", newSessionValues)
 
   return (
-    <Flex
-      minH="100vh"
-      align="center"
-      justify="center"
-      bgGradient='linear(to-b, blue.100, blue.700)'>
-      <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
-        <Stack align="center">
-          <Heading fontSize="4xl">Login</Heading>
-        </Stack>
-
-        <Box
-          rounded="lg"
-          bg={useColorModeValue('white', 'gray.700')}
-          boxShadow="lg"
-          minW='lg'
-          p={8}>
-          <Stack spacing={4}>
-            <Stack align="center">
-              <Text fontSize="m" color='red'>{newSessionValues.isError && newSessionValues.error.data.errors.join()}</Text>
-            </Stack>
+    <Flex position='relative'>
+      <Flex
+        h={{ sm: "initial", md: "75vh", lg: "100vh" }}
+        w='100%'
+        maxW='1044px'
+        mx='auto'
+        justifyContent='space-between'
+        pt={{ sm: "100px", md: "0px" }}>
+        <Flex
+          alignItems='center'
+          justifyContent='start'
+          style={{ userSelect: "none" }}
+          w={{ base: "100%", md: "50%", lg: "42%" }}>
+          <Flex
+            direction='column'
+            w='100%'
+            background='transparent'
+            p='48px'
+            mt={{ md: "150px", lg: "80px" }}>
+            <Heading color={titleColor} mb={10}>
+              Login
+            </Heading>
             <form onSubmit={formik.handleSubmit}>
-              <FormControl id="email">
-                <FormLabel>Email address</FormLabel>
+              <FormControl>
+                <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
+                  Email
+                </FormLabel>
                 <Input
-                  id="email"
+                  borderRadius='15px'
+                  mb='24px'
+                  fontSize='sm'
+                  type='text'
+                  placeholder='Your email adress'
+                  size='lg'
                   name="email"
-                  type="email"
-                  variant="filled"
                   onChange={formik.handleChange}
                   value={formik.values.email}
                 />
-              </FormControl>
-              <FormControl id="password">
-                <FormLabel>Password</FormLabel>
+                <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
+                  Password
+                </FormLabel>
                 <Input
-                  id="password"
+                  borderRadius='15px'
+                  mb='36px'
+                  fontSize='sm'
+                  type='password'
+                  placeholder='Your password'
+                  size='lg'
                   name="password"
-                  type="password"
-                  variant="filled"
                   onChange={formik.handleChange}
                   value={formik.values.password}
                 />
-              </FormControl>
-              <Stack spacing={10} mt={8}>
+                <Stack align="center">
+                  <Text fontSize="m" color='red'>{newSessionValues.isError && newSessionValues.error.data.errors.join()}</Text>
+                </Stack>
                 <Button
-                  type="submit"
-                  bg="blue.400"
-                  color="white"
+                  type='submit'
+                  bg='teal.300'
+                  w='100%'
+                  h='45'
+                  mb='20px'
+                  color='white'
+                  mt='20px'
                   isLoading={newSessionValues.isLoading}
                   _hover={{
-                    bg: 'blue.500',
+                    bg: "teal.200",
+                  }}
+                  _active={{
+                    bg: "teal.400",
                   }}>
-                  Sign in
+                  SIGN IN
                 </Button>
-              </Stack>
+              </FormControl>
             </form>
-            <Stack
-              direction={{ base: 'column', sm: 'row' }}
-              align="start"
-              justify="space-between">
-              <Link color="blue.400">Forgot password?</Link>
-            </Stack>
-          </Stack>
+            <Flex
+              flexDirection='column'
+              justifyContent='center'
+              alignItems='center'
+              maxW='100%'
+              mt='0px'>
+              <Link color={titleColor} as='span' ms='5px' fontWeight='medium'>
+                Forgot your password ?
+              </Link>
+            </Flex>
+          </Flex>
+        </Flex>
+        <Box
+          display={{ base: "none", md: "block" }}
+          overflowX='hidden'
+          h='100%'
+          w='40vw'
+          position='absolute'
+          pt={4}
+          pb={4}
+          right='0px'>
+          <Box
+            bgImage="/signInImage.png"
+            w='100%'
+            h='96%'
+            bgSize='cover'
+            bgPosition='50%'
+            position='absolute'
+            borderBottomLeftRadius='20px'
+            borderTopLeftRadius='20px' />
         </Box>
-      </Stack>
+      </Flex>
     </Flex>
   );
 }
