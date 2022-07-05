@@ -1,15 +1,12 @@
 export default build =>
   build.mutation({
-    query: ({ email, password }) => ({
-      url: "http://localhost:3001/api/v1/auth/sign_in",
+    query: ({ credentials, email }) => ({
+      url: "http://10.19.249.190:3001/api/v1/webauthn/authentications",
       method: "POST",
-      body: {
-        email,
-        password,
-      },
+      body: { credentials, email },
       responseHandler: async request => {
         const response = await request.json();
-        if (request.ok && response.data) {
+        if (request.ok) {
           return {
             ...response.data,
             accessToken: request.headers.get("access-token"),
