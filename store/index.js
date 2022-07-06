@@ -1,9 +1,9 @@
 /**
  * The external imports
  */
-import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/query'
-import storage from 'redux-persist/lib/storage'
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import storage from "redux-persist/lib/storage";
 import {
   persistReducer,
   persistStore,
@@ -13,38 +13,37 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist'
+} from "redux-persist";
+import { createWrapper } from "next-redux-wrapper";
+import {nextReduxCookieMiddleware, wrapMakeStore} from "next-redux-cookie-wrapper";
 
 /**
-* The internal imports
-*/
-import { api } from '../services/api'
-import credentials from './credentials'
+ * The internal imports
+ */
+import { api } from "../services/api";
+import credentials from "./credentials";
 
 const reducers = combineReducers({
   api: api.reducer,
-  credentials
-})
+  credentials,
+});
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist: ['credentials'],
-}
+// const store = () => configureStore({
+//   reducer: reducers,
+// });
 
-const persistedReducer = persistReducer(persistConfig, reducers)
+const makeStore = wrapMakeStore(() =>
+  configureStore({
+    reducer: reducers,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().prepend(
+        nextReduxCookieMiddleware({
+          subtrees: ["my.subtree"],
+        })
+      ),
+  })
+);
 
-const store = configureStore({
-  reducer: persistedReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
-  }).concat(api.middleware)
-})
+const wrapper = createWrapper(makeStore);
 
-const persistor = persistStore(store)
-
-setupListeners(store.dispatch)
-
-export { store, persistor }
+export { wrapper };

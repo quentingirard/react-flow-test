@@ -6,6 +6,8 @@ import CustomDefault from '../../components/nodes/customDefault';
 import CustomEdge from '../../components/customEdge';
 
 import styles from '../../styles/Home.module.css';
+import { wrapper } from '../../store';
+import { useSelector } from 'react-redux';
 
 const defaultEdgeOptions = { animated: false };
 
@@ -17,6 +19,9 @@ const Home = ({ initialNodes, initialEdges }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
+  const credentials = useSelector(state => state.credentials)
+  console.log('credentials', credentials)
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, type: 'customEdge' }, eds)), []);
   const nodeTypes = useMemo(() => ({ customDefault: CustomDefault }), []);
@@ -88,10 +93,13 @@ const Home = ({ initialNodes, initialEdges }) => {
   );
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
   // Fetch data from external API
   const res = await fetch('https://medalcreator.unisante.ch/api/v1/versions/1')
   const data = await res.json()
+
+  const state = store.getState()
+  console.log('store', state)
 
   const { nodes, diagnoses } = data.medal_r_json
 
@@ -129,6 +137,6 @@ export async function getServerSideProps() {
       initialEdges,
     }
   }
-}
+})
 
 export default Home;

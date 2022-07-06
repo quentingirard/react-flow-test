@@ -2,6 +2,7 @@
  * The external imports
  */
 import { createSlice } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
 
 /**
  * The internal imports
@@ -10,16 +11,24 @@ import { authApi } from "../../services/modules/auth";
 
 const slice = createSlice({
   name: "credentials",
-  initialState: null,
+  initialState: {},
   extraReducers: builder => {
-    builder.addMatcher(
-      authApi.endpoints.newSession.matchFulfilled,
-      (_state, { payload }) => payload
-    );
-    builder.addMatcher(
-      authApi.endpoints.authenticate.matchFulfilled,
-      (_state, { payload }) => payload
-    );
+    builder
+      .addCase(HYDRATE, (state, action) => {
+        console.log("HYDRATE", state, action.payload);
+        return {
+          ...state,
+          ...action.payload.credentials,
+        };
+      })
+      .addMatcher(
+        authApi.endpoints.newSession.matchFulfilled,
+        (_state, { payload }) => payload
+      )
+      .addMatcher(
+        authApi.endpoints.authenticate.matchFulfilled,
+        (_state, { payload }) => payload
+      );
   },
 });
 

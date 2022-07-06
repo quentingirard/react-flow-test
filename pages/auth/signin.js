@@ -61,7 +61,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (authenticateValues.isSuccess) {
-      router.push("/profile");
+      router.push("/app");
     }
   }, [authenticateValues.isSuccess]);
 
