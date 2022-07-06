@@ -14,6 +14,7 @@ import {
   Heading,
   useColorModeValue,
   Text,
+  useColorMode
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 
@@ -25,6 +26,7 @@ import {
 
 export default function SignIn() {
   const router = useRouter();
+  const { toggleColorMode } = useColorMode()
 
   const [newSession, newSessionValues] = useNewSessionMutation();
   const [challenge, challengeValues] = useChallengeMutation();
@@ -155,6 +157,9 @@ export default function SignIn() {
               <Link color={titleColor} as="span" ms="5px" fontWeight="medium">
                 Forgot your password ?
               </Link>
+              <Button size='sm' colorScheme='blue' onClick={toggleColorMode}>
+        Toggle Mode
+      </Button>
             </Flex>
           </Flex>
         </Flex>

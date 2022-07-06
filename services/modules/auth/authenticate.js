@@ -1,7 +1,7 @@
 export default build =>
   build.mutation({
     query: ({ credentials, email }) => ({
-      url: "http://10.19.249.190:3001/api/v1/webauthn/authentications",
+      url: "http://localhost:3001/api/v1/webauthn/authentications",
       method: "POST",
       body: { credentials, email },
       responseHandler: async request => {

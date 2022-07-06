@@ -14,7 +14,7 @@ import { PanelContentComponent } from "./additions/layout/PanelContent";
 import { PanelContainerComponent } from "./additions/layout/PanelContainer";
 // import { mode } from "@chakra-ui/theme-tools";
 export default extendTheme(
-  { breakpoints }, // Breakpoints
+  { breakpoints, initialColorMode: 'dark' }, // Breakpoints
   globalStyles,
   font, // Global styles
   buttonStyles, // Button styles
