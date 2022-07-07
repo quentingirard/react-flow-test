@@ -27,7 +27,7 @@ import {
 } from "../../services/modules/auth";
 
 export default function Profile() {
-  const [getAllCredentials, allCredentialsValues] = useLazyGetAllCredentialsQuery(deleteCredentials?.data, {skip: deleteCredentials?.isSuccess})
+  const [getAllCredentials, allCredentialsValues] = useLazyGetAllCredentialsQuery()
   const [createCredentials] = useCreateCredentialsMutation()
   const [deleteCredentials] = useDeleteCredentialsMutation()
   const [challenge, challengeValues] = useChallengeMutation()

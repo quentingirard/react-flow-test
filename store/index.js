@@ -3,17 +3,6 @@
  */
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import storage from "redux-persist/lib/storage";
-import {
-  persistReducer,
-  persistStore,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
 import { createWrapper } from "next-redux-wrapper";
 
 /**
@@ -32,5 +21,7 @@ const store = () => configureStore({
 });
 
 const wrapper = createWrapper(store);
+
+setupListeners(store.dispatch)
 
 export { store, wrapper };

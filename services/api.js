@@ -1,18 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { getCookie } from "cookies-next";
 
 /**
  * Default api configuration
  */
  const baseQuery = fetchBaseQuery({
   baseUrl: process.env.SERVER_URL,
-  prepareHeaders: async (headers, { getState }) => {
-    const credentials = await getState().credentials
+  prepareHeaders: async (headers) => {
+    const sessions = JSON.parse(getCookie('sessions'))
 
-    if (credentials) {
-      headers.set('access-token', credentials.accessToken)
-      headers.set('client', credentials.client)
-      headers.set('expiry', credentials.expiry)
-      headers.set('uid', credentials.uid)
+    if (sessions) {
+      headers.set('access-token', sessions.accessToken)
+      headers.set('client', sessions.client)
+      headers.set('expiry', sessions.expiry)
+      headers.set('uid', sessions.uid)
     }
 
     return headers
