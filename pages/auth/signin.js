@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as WebAuthnJSON from "@github/webauthn-json";
 import NextLink from "next/link"
@@ -8,7 +8,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Stack,
   VStack,
   Link,
   Button,
