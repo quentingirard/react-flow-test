@@ -3,7 +3,7 @@
  */
 import { createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
-import { setCookie } from "cookies-next";
+import { setCookie, deleteCookie } from "cookies-next";
 
 /**
  * The internal imports
@@ -53,7 +53,14 @@ const slice = createSlice({
           );
           return payload;
         }
-      );
+      )
+      .addMatcher(
+        authApi.endpoints.destroySession.matchFulfilled,
+        (_state, { _payload }) => {
+          deleteCookie("sessions");
+          return {};
+        }
+      )
   },
 });
 

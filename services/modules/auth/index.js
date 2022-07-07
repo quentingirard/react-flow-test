@@ -8,10 +8,12 @@ import createCredentials from "./credentials";
 import getAllCredentials from "./getAllCredentials";
 import deleteCredentials from "./deleteCredentials";
 import authenticate from "./authenticate";
+import destroySession from "./destroySession";
 
 export const authApi = api.injectEndpoints({
   endpoints: build => ({
     newSession: newSession(build),
+    destroySession: destroySession(build),
     challenge: challenge(build),
     createCredentials: createCredentials(build),
     deleteCredentials: deleteCredentials(build),
@@ -23,6 +25,7 @@ export const authApi = api.injectEndpoints({
 
 export const {
   useNewSessionMutation,
+  useDestroySessionMutation,
   useChallengeMutation,
   useCreateCredentialsMutation,
   useDeleteCredentialsMutation,

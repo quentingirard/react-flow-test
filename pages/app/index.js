@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, useMemo } from "react";
+import { useCallback, useState, useRef, useMemo, useEffect } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   useEdgesState,
@@ -9,6 +9,9 @@ import ReactFlow, {
   Background,
   MarkerType,
 } from "react-flow-renderer";
+import { Button } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 import Sidebar from "../../components/sidebar";
 import CustomDefault from "../../components/nodes/customDefault";
@@ -16,7 +19,8 @@ import CustomEdge from "../../components/customEdge";
 
 import styles from "../../styles/Home.module.css";
 import { wrapper } from "../../store";
-import { useSelector } from "react-redux";
+import { useDestroySessionMutation } from "../../services/modules/auth";
+import { Router } from "next/router";
 
 const defaultEdgeOptions = { animated: false };
 
@@ -25,12 +29,12 @@ const getId = () => `dndnode_${id++}`;
 
 const Home = ({ initialNodes, initialEdges }) => {
   const reactFlowWrapper = useRef(null);
+  const router = useRouter();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  const credentials = useSelector(state => state.credentials);
-  console.log("credentials", credentials);
+  const [destroySession, destroySessionValues] = useDestroySessionMutation();
 
   const onConnect = useCallback(
     params => setEdges(eds => addEdge({ ...params, type: "customEdge" }, eds)),
@@ -72,10 +76,19 @@ const Home = ({ initialNodes, initialEdges }) => {
     [reactFlowInstance]
   );
 
+  useEffect(() => {
+    if (destroySessionValues.isSuccess) {
+      router.push('auth/signin');
+    }
+  }, [destroySessionValues.isSuccess]);
+
   return (
     <div className={styles.dndflow}>
       <ReactFlowProvider>
         <Sidebar />
+        <Button size="sm" colorScheme="blue" onClick={destroySession}>
+          Logout
+        </Button>
         <div className={styles.reactflowWrapper} ref={reactFlowWrapper}>
           <ReactFlow
             nodeTypes={nodeTypes}
@@ -117,7 +130,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     // Next-redux-wrapper will allow us to dispatch to the store in the getServerSideProps
     // store.dispatch(...)
-    console.log(store)
+    console.log(store);
 
     const { nodes, diagnoses } = data.medal_r_json;
 
