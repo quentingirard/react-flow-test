@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import * as WebAuthnJSON from "@github/webauthn-json";
-import NextLink from "next/link"
+import NextLink from "next/link";
 import {
   Flex,
   Box,
@@ -19,52 +19,28 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 
-import {
-  useNewSessionMutation,
-  useChallengeMutation,
-  useAuthenticateMutation,
-} from "../../services/modules/auth";
+import { useForgotPasswordMutation } from "../../services/modules/auth";
 
 export default function SignIn() {
   const router = useRouter();
   const { toggleColorMode } = useColorMode();
 
-  const [newSession, newSessionValues] = useNewSessionMutation();
-  const [challenge, challengeValues] = useChallengeMutation();
-  const [authenticate, authenticateValues] = useAuthenticateMutation();
+  const [forgotPassword, forgotPasswordValues] = useForgotPasswordMutation();
 
   const formik = useFormik({
     initialValues: {
       email: "dev@wavemind.ch",
-      password: "123456",
     },
-    onSubmit: newSession,
+    onSubmit: forgotPassword,
   });
 
   const titleColor = useColorModeValue("teal.300", "teal.200");
 
   useEffect(() => {
-    if (newSessionValues.isSuccess) {
-      if (newSessionValues.data.challenge) {
-        WebAuthnJSON.get({
-          publicKey: { ...newSessionValues.data, rp: { name: "Test" } },
-        }).then(newCredentialInfo => {
-          authenticate({
-            credentials: newCredentialInfo,
-            email: formik.values.email,
-          });
-        });
-      } else {
-        router.push("/profile");
-      }
-    }
-  }, [newSessionValues.isSuccess]);
-
-  useEffect(() => {
-    if (authenticateValues.isSuccess) {
+    if (forgotPasswordValues.isSuccess) {
       router.push("/app");
     }
-  }, [authenticateValues.isSuccess]);
+  }, [forgotPasswordValues.isSuccess]);
 
   return (
     <Flex position="relative">
@@ -90,7 +66,7 @@ export default function SignIn() {
             mt={{ md: "150px", lg: "80px" }}
           >
             <Heading as="h1" mb={10}>
-              Login
+              Forgot Password
             </Heading>
             <form onSubmit={formik.handleSubmit}>
               <FormControl>
@@ -109,26 +85,9 @@ export default function SignIn() {
                       size="lg"
                     />
                   </Box>
-                  <Box>
-                    <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-                      Password
-                    </FormLabel>
-                    <Input
-                      type="password"
-                      name="password"
-                      placeholder="Your password"
-                      onChange={formik.handleChange}
-                      value={formik.values.password}
-                      size="lg"
-                      fontSize="sm"
-                    />
-                  </Box>
                 </VStack>
                 <Box mt={4} textAlign="center">
-                  <Text fontSize="m" color="red">
-                    {newSessionValues.isError &&
-                      newSessionValues.error.data.errors.join()}
-                  </Text>
+                  
                 </Box>
                 <Button
                   type="submit"
@@ -138,7 +97,7 @@ export default function SignIn() {
                   mb="20px"
                   color="white"
                   mt="20px"
-                  isLoading={newSessionValues.isLoading}
+                  isLoading={forgotPasswordValues.isLoading}
                   _hover={{
                     bg: "teal.200",
                   }}
@@ -146,7 +105,7 @@ export default function SignIn() {
                     bg: "teal.400",
                   }}
                 >
-                  SIGN IN
+                  SEND
                 </Button>
               </FormControl>
             </form>
@@ -157,14 +116,11 @@ export default function SignIn() {
               maxW="100%"
               mt="0px"
             >
-            <NextLink href="/auth/forgot_password">
-              <Link color={titleColor} as="span" ms="5px" fontWeight="medium">
-                Forgot your password ?
-              </Link>
-            </NextLink>
-              <Button size="sm" colorScheme="blue" onClick={toggleColorMode}>
-                Toggle Mode
-              </Button>
+              <NextLink href="/auth/signin">
+                <Link color={titleColor} as="span" ms="5px" fontWeight="medium">
+                  Sign in
+                </Link>
+              </NextLink>
             </Flex>
           </Flex>
         </Flex>

@@ -9,6 +9,8 @@ import getAllCredentials from "./getAllCredentials";
 import deleteCredentials from "./deleteCredentials";
 import authenticate from "./authenticate";
 import destroySession from "./destroySession";
+import forgotPassword from "./forgotPassword";
+import newPassword from "./newPassword";
 
 export const authApi = api.injectEndpoints({
   endpoints: build => ({
@@ -19,6 +21,8 @@ export const authApi = api.injectEndpoints({
     deleteCredentials: deleteCredentials(build),
     getAllCredentials: getAllCredentials(build),
     authenticate: authenticate(build),
+    forgotPassword: forgotPassword(build),
+    newPassword: newPassword(build),
   }),
   overrideExisting: false,
 });
@@ -31,4 +35,6 @@ export const {
   useDeleteCredentialsMutation,
   useLazyGetAllCredentialsQuery,
   useAuthenticateMutation,
+  useForgotPasswordMutation,
+  useNewPasswordMutation,
 } = authApi;

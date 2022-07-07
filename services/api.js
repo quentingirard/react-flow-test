@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getCookie } from "cookies-next";
+import { getCookie, hasCookie } from "cookies-next";
 
 /**
  * Default api configuration
@@ -7,9 +7,8 @@ import { getCookie } from "cookies-next";
  const baseQuery = fetchBaseQuery({
   baseUrl: process.env.SERVER_URL,
   prepareHeaders: async (headers) => {
-    const sessions = JSON.parse(getCookie('sessions'))
-
-    if (sessions) {
+    if (hasCookie('sessions')) {
+      const sessions = JSON.parse(getCookie('sessions'))
       headers.set('access-token', sessions.accessToken)
       headers.set('client', sessions.client)
       headers.set('expiry', sessions.expiry)
