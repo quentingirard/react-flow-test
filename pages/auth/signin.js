@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as WebAuthnJSON from "@github/webauthn-json";
 
@@ -8,7 +8,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Stack,
   VStack,
   Link,
   Button,
@@ -21,16 +20,14 @@ import { useFormik } from "formik";
 
 import {
   useNewSessionMutation,
-  useChallengeMutation,
   useAuthenticateMutation,
 } from "../../services/modules/auth";
 
 export default function SignIn() {
   const router = useRouter();
   const { toggleColorMode } = useColorMode()
-
+console.log('props', router.query)
   const [newSession, newSessionValues] = useNewSessionMutation();
-  const [challenge, challengeValues] = useChallengeMutation();
   const [authenticate, authenticateValues] = useAuthenticateMutation();
 
   const formik = useFormik({
@@ -46,6 +43,7 @@ export default function SignIn() {
   useEffect(() => {
     if (newSessionValues.isSuccess) {
       if (newSessionValues.data.challenge) {
+        console.log('asdad',newSessionValues)
         WebAuthnJSON.get({
           publicKey: { ...newSessionValues.data, rp: { name: "Test" } },
         }).then(newCredentialInfo => {
@@ -55,14 +53,23 @@ export default function SignIn() {
           });
         });
       } else {
-        router.push("/profile");
+        if (router.query.from) {
+          router.push(router.query.from)
+        } else {
+          router.push("/profile");
+        }
+        
       }
     }
   }, [newSessionValues.isSuccess]);
 
   useEffect(() => {
     if (authenticateValues.isSuccess) {
-      router.push("/profile");
+      if (router.query.from) {
+        router.push(router.query.from)
+      } else {
+        router.push("/profile");
+      }
     }
   }, [authenticateValues.isSuccess]);
 

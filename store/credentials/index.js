@@ -21,7 +21,7 @@ const slice = createSlice({
           client: payload.client,
           expiry: payload.expiry,
           uid: payload.uid,
-        }, { expires: payload.expiry })
+        }, { expires: new Date(payload.expiry) })
         return payload
       }
     );
@@ -33,7 +33,7 @@ const slice = createSlice({
           client: payload.client,
           expiry: payload.expiry,
           uid: payload.uid,
-        }, { expires: payload.expiry })
+        }, { expires: new Date(payload.expiry) })
         return payload
       }
     );
