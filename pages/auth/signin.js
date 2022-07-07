@@ -9,6 +9,7 @@ import {
   FormLabel,
   Input,
   Stack,
+  VStack,
   Link,
   Button,
   Heading,
@@ -88,45 +89,47 @@ export default function SignIn() {
             p="48px"
             mt={{ md: "150px", lg: "80px" }}
           >
-            <Heading color={titleColor} mb={10}>
+            <Heading as="h1" mb={10}>
               Login
             </Heading>
             <form onSubmit={formik.handleSubmit}>
               <FormControl>
-                <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-                  Email
-                </FormLabel>
-                <Input
-                  borderRadius="15px"
-                  mb="24px"
-                  fontSize="sm"
-                  type="text"
-                  placeholder="Your email adress"
-                  size="lg"
-                  name="email"
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                />
-                <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-                  Password
-                </FormLabel>
-                <Input
-                  borderRadius="15px"
-                  mb="36px"
-                  fontSize="sm"
-                  type="password"
-                  placeholder="Your password"
-                  size="lg"
-                  name="password"
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
-                />
-                <Stack align="center">
+                <VStack align="left" spacing={5}>
+                  <Box>
+                    <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                      Email
+                    </FormLabel>
+                    <Input
+                      type="text"
+                      name="email"
+                      placeholder="Your email adress"
+                      onChange={formik.handleChange}
+                      value={formik.values.email}
+                      fontSize="sm"
+                      size="lg"
+                    />
+                  </Box>
+                  <Box>
+                    <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                      Password
+                    </FormLabel>
+                    <Input
+                      type="password"
+                      name="password"
+                      placeholder="Your password"
+                      onChange={formik.handleChange}
+                      value={formik.values.password}
+                      size="lg"
+                      fontSize="sm"
+                    />
+                  </Box>
+                </VStack>
+                <Box mt={4} textAlign="center">
                   <Text fontSize="m" color="red">
                     {newSessionValues.isError &&
                       newSessionValues.error.data.errors.join()}
                   </Text>
-                </Stack>
+                </Box>
                 <Button
                   type="submit"
                   bg="teal.300"

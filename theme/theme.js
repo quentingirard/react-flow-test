@@ -5,6 +5,7 @@ import { breakpoints } from "./foundations/breakpoints";
 import { buttonStyles } from "./components/button";
 import { badgeStyles } from "./components/badge";
 import { linkStyles } from "./components/link";
+import { inputStyles } from "./components/input";
 import { drawerStyles } from "./components/drawer";
 import { CardComponent } from "./additions/card/Card";
 import { CardBodyComponent } from "./additions/card/CardBody";
@@ -19,6 +20,7 @@ export default extendTheme(
   font, // Global styles
   buttonStyles, // Button styles
   badgeStyles, // Badge styles
+  inputStyles, // Input styles
   linkStyles, // Link styles
   drawerStyles, // Sidebar variant for Chakra's drawer
   CardComponent, // Card component

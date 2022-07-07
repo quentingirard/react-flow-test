@@ -14,6 +14,9 @@ export const globalStyles = {
       },
       html: {
         fontFamily: 'Helvetica, sans-serif'
+      },
+      h1: {
+        color: mode("yellow.500", "yellow.200")(props)
       }
     }),
   },

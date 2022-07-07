@@ -1,24 +1,18 @@
 // https://nextjs.org/docs/messages/nested-middleware
 import { NextResponse } from 'next/server'
 
-export function middleware(request) {
+export function middleware(req, res) {
+  const sessions = req.cookies.get('sessions', { req, res })
 
-  // console.log("middleware ICI ?",request.nextUrl.pathname)
+  console.log('sessions', sessions)
 
-  // if (!request.nextUrl.pathname.startsWith('/auth') && !request.nextUrl.pathname.startsWith('/_next') && !request.nextUrl.pathname.includes('.')) {
-  //   return NextResponse.redirect(
-  //     new URL(`/auth/signin`, request.url)
-  //   )
-  // }
+  if (!req.nextUrl.pathname.startsWith('/auth') && !req.nextUrl.pathname.startsWith('/_next') && !req.nextUrl.pathname.includes('.')) {
+    if (!sessions) {
+      return NextResponse.redirect(
+        new URL(`/auth/signin`, req.url)
+      )
+    }
+  }
 
-  // return NextResponse.next()
-
-  // // Avoid check for auth path
-  // if (request.nextUrl.pathname.startsWith('/auth')) {
-  //   return NextResponse.next()
-  // } else {
-  //   return NextResponse.redirect(
-  //     new URL(`/auth/signin`, request.url)
-  //   )
-  // }
+  return NextResponse.next()
 }
