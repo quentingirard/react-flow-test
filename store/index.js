@@ -15,7 +15,6 @@ import {
   REGISTER,
 } from "redux-persist";
 import { createWrapper } from "next-redux-wrapper";
-import {nextReduxCookieMiddleware, wrapMakeStore} from "next-redux-cookie-wrapper";
 
 /**
  * The internal imports
@@ -28,22 +27,10 @@ const reducers = combineReducers({
   credentials,
 });
 
-// const store = () => configureStore({
-//   reducer: reducers,
-// });
+const store = () => configureStore({
+  reducer: reducers,
+});
 
-const makeStore = wrapMakeStore(() =>
-  configureStore({
-    reducer: reducers,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().prepend(
-        nextReduxCookieMiddleware({
-          subtrees: ["my.subtree"],
-        })
-      ),
-  })
-);
+const wrapper = createWrapper(store);
 
-const wrapper = createWrapper(makeStore);
-
-export { wrapper };
+export { store, wrapper };
