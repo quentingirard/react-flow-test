@@ -40,7 +40,6 @@ const slice = createSlice({
       .addMatcher(
         authApi.endpoints.authenticate.matchFulfilled,
         (_state, { payload }) => {
-          console.log('in reducer', payload);
           setCookie(
             "sessions",
             {
