@@ -38,6 +38,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (challengeValues.isSuccess) {
+      console.log(challengeValues)
       create({ 'publicKey': {...challengeValues.data, rp: {name: 'Test'}} })
       .then((newCredentialInfo) => {
         createCredentials({ credential: newCredentialInfo, challenge: challengeValues.data.challenge, name: formik.values.name })

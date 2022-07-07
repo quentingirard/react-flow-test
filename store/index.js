@@ -2,7 +2,6 @@
  * The external imports
  */
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
 import { createWrapper } from "next-redux-wrapper";
 
 /**
@@ -18,10 +17,9 @@ const reducers = combineReducers({
 
 const store = () => configureStore({
   reducer: reducers,
+  middleware: getDefaultMiddleware => getDefaultMiddleware({}).concat(api.middleware)
 });
 
 const wrapper = createWrapper(store);
-
-setupListeners(store.dispatch)
 
 export { store, wrapper };
