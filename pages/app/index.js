@@ -128,10 +128,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
     );
     const data = await res.json();
 
-    // Next-redux-wrapper will allow us to dispatch to the store in the getServerSideProps
-    // store.dispatch(...)
-    console.log(store);
-
     const { nodes, diagnoses } = data.medal_r_json;
 
     const initialNodes = [];
